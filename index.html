@@ -1,0 +1,218 @@
+<!doctype html><html lang="zh-Hant"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>李舜權 · 做過的東西</title>
+<meta name="description" content="精密加工生產管理十年，現在把現場練出來的問題拆解與數據判讀寫成工具。">
+<style>
+  /* 深色底：他自己的產品（偵測器）本來就是深色，白底會像貼歪的貼紙。
+     強調色取自他自己的東西 —— 琥珀來自健康儀表板的 KPI 卡，冷藍來自偵測器。 */
+  :root{
+    --bg:#0E1116; --card:#161B22; --edge:#252C36; --deep:#11161D;
+    --ink:#E9EDF3; --dim:#98A2B3; --faint:#6B7480;
+    --amber:#E8A33D; --cool:#6FB3D2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg); color:var(--ink);
+    font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
+    font-size:16px; line-height:1.7; letter-spacing:.01em; padding:0 0 46px}
+  .wrap{max-width:440px; margin:0 auto; padding:0 18px}
+
+  header{padding:34px 0 24px}
+  .nm{font-size:31px; font-weight:800; letter-spacing:.13em; line-height:1.25}
+  .tag{margin-top:10px; font-size:15.5px; color:var(--dim); line-height:1.68}
+  .tag b{color:var(--amber); font-weight:700}
+  .rule{height:2px; background:linear-gradient(90deg,var(--amber),transparent); margin-top:17px}
+
+  .card{background:var(--card); border:1px solid var(--edge); border-radius:14px;
+        margin-bottom:16px; overflow:hidden}
+  .hd{padding:15px 16px 0}
+  .t{font-size:18px; font-weight:800; letter-spacing:.02em}
+  .s{margin-top:5px; font-size:14.5px; color:var(--dim); line-height:1.62}
+  .s em{font-style:normal; color:var(--cool); font-weight:700}
+  .body{padding:13px 16px 16px}
+
+  /* 管線：這張卡的賣點是「一條會自己跑的資料管線」，不是我的身體數字 */
+  .pipe{display:flex; flex-direction:column; margin-bottom:13px}
+  .st{background:var(--deep); border:1px solid var(--edge); border-radius:9px;
+      padding:9px 12px}
+  .st .k{font-size:14.5px; font-weight:700}
+  .st .v{font-size:12.5px; color:var(--faint); margin-top:1px; line-height:1.5}
+  .ar{height:15px; position:relative}
+  .ar::before{content:""; position:absolute; left:19px; top:0; bottom:5px; width:2px;
+              background:var(--edge)}
+  .ar::after{content:""; position:absolute; left:16px; bottom:0;
+             border-top:6px solid var(--edge);
+             border-left:4px solid transparent; border-right:4px solid transparent}
+
+  .line{background:#8CABD8; border-radius:11px; padding:11px 11px 13px}
+  .who{font-size:11.5px; color:#1A2A3F; font-weight:700; margin:0 0 5px 2px; letter-spacing:.04em}
+  .bub{background:#fff; color:#1B1F26; border-radius:4px 13px 13px 13px;
+       padding:11px 13px; font-size:13.5px; line-height:1.78}
+  .bub .d{color:#5A6472; font-size:11.5px; margin-bottom:6px}
+  .bub p{margin:0 0 2px}
+  .bub b{font-weight:700; color:#0B0E13}
+
+  .vid{position:relative; border-radius:10px; overflow:hidden; background:#000;
+       border:1px solid var(--edge); cursor:pointer}
+  .vid img,.vid video{display:block; width:100%; height:auto}
+  .vid video{display:none}
+  .vid.on img,.vid.on .play{display:none}
+  .vid.on video{display:block}
+  .play{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+        background:rgba(8,10,14,.34)}
+  .play i{width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,.94);
+          display:flex; align-items:center; justify-content:center;
+          box-shadow:0 4px 18px rgba(0,0,0,.45)}
+  .play i::after{content:""; border-left:17px solid #14181F;
+                 border-top:10px solid transparent; border-bottom:10px solid transparent;
+                 margin-left:5px}
+
+  /* 級距：分級的價值在「對應到什麼處置」，不在數字大小 */
+  .lv{display:flex; flex-direction:column; gap:5px; margin-top:11px}
+  .lv div{display:flex; gap:9px; align-items:baseline; font-size:13px}
+  .lv b{flex:none; width:22px; font-weight:800; font-variant-numeric:tabular-nums}
+  .l0 b{color:#6B7480} .l1 b{color:var(--amber)} .l2 b{color:#E06060}
+  .lv span{color:var(--dim)}
+
+  /* 事實欄：把「做到什麼／還做不到什麼」寫清楚，被追問才不會垮 */
+  .fact{margin-top:12px; padding:10px 12px; background:var(--deep);
+        border-left:2px solid var(--edge); border-radius:0 7px 7px 0;
+        font-size:12.5px; color:var(--faint); line-height:1.74}
+  .fact b{color:var(--dim); font-weight:700}
+
+  .ct{margin-top:26px; padding-top:22px; border-top:1px solid var(--edge)}
+  .ct .h{font-size:13px; color:var(--faint); letter-spacing:.18em; margin-bottom:12px}
+  .ct a{display:flex; align-items:center; gap:12px; padding:13px 15px; margin-bottom:9px;
+        background:var(--card); border:1px solid var(--edge); border-radius:11px;
+        color:var(--ink); text-decoration:none; font-size:15px; font-weight:600}
+  .ct a .lb{color:var(--faint); font-size:12.5px; width:54px; flex:none; letter-spacing:.06em}
+  .foot{margin-top:20px; font-size:12.5px; color:var(--faint); line-height:1.78}
+  .foot b{color:var(--dim); font-weight:700}
+  a:focus-visible,.vid:focus-visible{outline:2px solid var(--amber); outline-offset:3px}
+</style></head><body>
+<div class="wrap">
+
+<header>
+  <div class="nm">李舜權</div>
+  <div class="tag">精密加工<b>生產管理十年</b>，現場帶 10～15 人。<br>
+    現在把現場練出來的拆解問題跟看數據，寫成工具。</div>
+  <div class="rule"></div>
+</header>
+
+<!-- ① 健康小幫手 -->
+<div class="card">
+  <div class="hd">
+    <div class="t">健康小幫手</div>
+    <div class="s">把手錶資料接成一條<em>自己會跑的管線</em>：<br>抓數據 → 算異常 → 寫成人話 → 推到 LINE。</div>
+  </div>
+  <div class="body">
+    <div class="pipe">
+      <div class="st"><div class="k">Garmin 手錶</div>
+        <div class="v">排程每天叫 API 取昨天的數字</div></div>
+      <div class="ar"></div>
+      <div class="st"><div class="k">本機資料庫</div>
+        <div class="v">步數／心率／睡眠分期／壓力／身體電量</div></div>
+      <div class="ar"></div>
+      <div class="st"><div class="k">pandas 算異常</div>
+        <div class="v">跟自己的七日均、跟目標比，挑出該講的</div></div>
+      <div class="ar"></div>
+      <div class="st"><div class="k">LLM 寫成人話</div>
+        <div class="v">不是把數字丟出來，是講成看得懂的建議</div></div>
+      <div class="ar"></div>
+      <div class="st"><div class="k">LINE 推播</div>
+        <div class="v">早上打開手機就看到</div></div>
+    </div>
+
+    <div class="line">
+      <div class="who">健康小幫手</div>
+      <div class="bub">
+        <div class="d">實際輸出 · 2026-07-12</div>
+        <p>😴 睡眠：昨晚<b>深層睡眠不足</b>，沒有達到每日 1.5 小時的目標。</p>
+        <p>👟 步數：走了 <b>7,469 步</b>，已達成目標，比前一天大幅進步！但中高強度僅 1 分鐘。</p>
+        <p>💗 心跳：靜息心率 <b>56</b>，維持在近七日平均 57 的良好水準。</p>
+        <p>😰 壓力：平均壓力 <b>40</b>，屬於中等偏高，可多嘗試放鬆。</p>
+      </div>
+    </div>
+
+    <div class="fact">
+      <b>資料</b>　2019–2026 累積 1,671 天紀錄（不連續，從 Garmin 歷史一次匯入）<br>
+      <b>排程</b>　2026 年 6–7 月實作並連續跑了一個月，目前沒有在跑<br>
+      <b>範圍</b>　單人、全部在自己電腦上，沒有雲端也沒有多使用者
+    </div>
+  </div>
+</div>
+
+<!-- ② 危機偵測 -->
+<div class="card">
+  <div class="hd">
+    <div class="t">地端危機偵測引擎</div>
+    <div class="s">一句話進來，<em>不連網</em>判斷要不要驚動家人。<br>畢業專題裡我負責的那一層。</div>
+  </div>
+  <div class="body">
+    <div class="vid" tabindex="0" data-src="v/detector.mp4">
+      <img src="v/detector.jpg" alt="偵測器把「我拖累你們了」判成 L4 危機，耗時 1.636 毫秒">
+      <div class="play"><i></i></div>
+      <video playsinline muted loop preload="none"></video>
+    </div>
+    <div class="lv">
+      <div class="l0"><b>L0</b><span>沒事，不處理</span></div>
+      <div class="l1"><b>L1</b><span>記下來，不打擾任何人</span></div>
+      <div class="l2"><b>L2</b><span>通知家人，手機立刻收到</span></div>
+    </div>
+    <div class="fact">
+      <b>做得到</b>　純規則 5,359 行，只用 Python 內建的 re，不連網、不用 GPU，一句 2 毫秒<br>
+      <b>做不到</b>　婉轉、整句沒有危險字的（「我東西都整理好了」）規則層抓不到。完整系統（規則＋LLM）在外部臨床量表出的題目上約四成六<br>
+      <b>所以</b>　　它是 LLM 失效時的地板，不是主力
+    </div>
+  </div>
+</div>
+
+<!-- ③ 小咪 -->
+<div class="card">
+  <div class="hd">
+    <div class="t">小咪 · 桌面虛擬角色</div>
+    <div class="s">零框架原生 JS，<em>10 種情緒的狀態機</em>，<br>Gemini 結構化輸出 ＋ 四層降級。</div>
+  </div>
+  <div class="body">
+    <div class="vid" tabindex="0" data-src="v/mimi.mp4">
+      <img src="v/mimi.jpg" alt="小咪角色的表情動畫與對話畫面">
+      <div class="play"><i></i></div>
+      <video playsinline muted loop preload="none"></video>
+    </div>
+    <div class="fact">
+      <b>四層降級</b>　模型掛掉、額度用完、網路斷了都還能動，只是退回比較笨的模式<br>
+      <b>原始碼</b>　　github.com/Mas-000/xiaomi-desk-pet（公開）
+    </div>
+  </div>
+</div>
+
+<div class="ct">
+  <div class="h">聯 絡</div>
+  <a href="mailto:w1101102002@gmail.com"><span class="lb">Email</span>w1101102002@gmail.com</a>
+  <a href="https://github.com/Mas-000" target="_blank" rel="noopener"><span class="lb">GitHub</span>github.com/Mas-000</a>
+  <div class="foot">
+    這一頁是我自己做的。<br>
+    兩支影片都是<b>實機錄影</b>，畫面上的毫秒數是真的跑出來的；<br>
+    偵測器影片裡輸入的句子是<b>我自己寫的測試句</b>，不是真實使用者的話。
+  </div>
+</div>
+
+</div>
+<script>
+  // 點一下才載影片：會場網路擠，預載會讓整頁卡住
+  document.querySelectorAll('.vid').forEach(function (box) {
+    function go() {
+      if (box.classList.contains('on')) return;
+      var v = box.querySelector('video');
+      v.src = box.dataset.src;
+      box.classList.add('on');
+      v.play().catch(function () {});
+    }
+    box.addEventListener('click', go);
+    box.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+    });
+  });
+</script>
+</body></html>
