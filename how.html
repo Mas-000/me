@@ -1,0 +1,160 @@
+<!doctype html><html lang="zh-Hant"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI 犯的錯，我怎麼抓</title>
+<meta name="description" content="五個實際攔下來的例子。它們的共同點：錯的東西長得像對的。">
+<style>
+  :root{
+    --bg:#0E1116; --card:#161B22; --edge:#252C36; --deep:#11161D;
+    --ink:#E9EDF3; --dim:#98A2B3; --faint:#6B7480;
+    --amber:#E8A33D; --cool:#6FB3D2; --ok:#4C9E6A; --bad:#D9604F;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg); color:var(--ink);
+    font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
+    font-size:16px; line-height:1.7; letter-spacing:.01em; padding:0 0 46px}
+  .wrap{max-width:440px; margin:0 auto; padding:0 18px}
+
+  .back{display:inline-block; margin-top:20px; font-size:13.5px; color:var(--faint);
+        text-decoration:none; letter-spacing:.04em}
+  header{padding:16px 0 22px}
+  h1{font-size:25px; font-weight:800; letter-spacing:.08em; line-height:1.35}
+  .lead{margin-top:12px; font-size:15.5px; color:var(--dim); line-height:1.7}
+  .lead b{color:var(--amber); font-weight:700}
+  .rule{height:2px; background:linear-gradient(90deg,var(--amber),transparent); margin-top:17px}
+
+  .case{background:var(--card); border:1px solid var(--edge); border-radius:14px;
+        padding:15px 16px 16px; margin-bottom:15px}
+  .no{font-size:11.5px; color:var(--faint); letter-spacing:.16em; font-weight:700}
+  .ct{margin-top:4px; font-size:17px; font-weight:800; line-height:1.45}
+
+  .row{margin-top:11px; padding:9px 12px; border-radius:8px; background:var(--deep);
+       border-left:3px solid var(--edge)}
+  .row .lb{font-size:11.5px; font-weight:700; letter-spacing:.1em; margin-bottom:2px}
+  .row .tx{font-size:14px; line-height:1.65; color:var(--dim)}
+  .row .tx b{color:var(--ink); font-weight:700}
+  .looks{border-left-color:var(--ok)} .looks .lb{color:var(--ok)}
+  .real{border-left-color:var(--bad)} .real .lb{color:var(--bad)}
+  .how{border-left-color:var(--cool)} .how .lb{color:var(--cool)}
+
+  .sum{margin-top:24px; padding:16px 17px; background:var(--card);
+       border:1px solid var(--edge); border-radius:14px}
+  .sum h2{font-size:17px; font-weight:800; margin-bottom:9px}
+  .sum p{font-size:14.5px; color:var(--dim); line-height:1.72}
+  .sum p+p{margin-top:8px}
+  .sum b{color:var(--ink); font-weight:700}
+
+  .kit{margin-top:15px; display:flex; flex-direction:column; gap:7px}
+  .kit div{display:flex; gap:10px; align-items:baseline; font-size:13.5px; color:var(--dim)}
+  .kit b{flex:none; width:52px; color:var(--amber); font-weight:800;
+         font-variant-numeric:tabular-nums; text-align:right}
+  .foot{margin-top:22px; font-size:12.5px; color:var(--faint); line-height:1.75}
+  a{color:var(--cool)}
+</style></head><body>
+<div class="wrap">
+
+<a class="back" href="./">‹ 回上一頁</a>
+
+<header>
+  <h1>AI 犯的錯，我怎麼抓</h1>
+  <div class="lead">底下五個是實際攔下來的。<br>
+    它們的共同點：<b>錯的東西長得像對的</b>——不會報錯、不會噴例外，
+    你看到的是一個很正常的綠燈或一份每欄都有值的報表。</div>
+  <div class="rule"></div>
+</header>
+
+<div class="case">
+  <div class="no">案例 一</div>
+  <div class="ct">測試全綠，但它只跑到 61 分之 1</div>
+  <div class="row looks"><div class="lb">看起來</div>
+    <div class="tx">CI 印出綠色的 <b>23 passed</b>，一切正常。</div></div>
+  <div class="row real"><div class="lb">實際上</div>
+    <div class="tx">那個 repo 有 <b>61 個測試檔</b>，其中 60 個是「從上往下跑」的腳本，
+      pytest <b>一個都收不到</b>——那 23 個全來自剩下的那一檔。
+      也就是它一直在測 61 分之 1，而且<b>沒有任何徵兆</b>。</div></div>
+  <div class="row how"><div class="lb">怎麼抓到的</div>
+    <div class="tx">接 CI 之前先跑一次 <b>pytest --collect-only</b>，把「收到幾個」跟
+      「我有幾個」對一次。數字對不上就不要接那一行。</div></div>
+</div>
+
+<div class="case">
+  <div class="no">案例 二</div>
+  <div class="ct">12 條測試全過，但被測的函式從沒成功執行過</div>
+  <div class="row looks"><div class="lb">看起來</div>
+    <div class="tx">12/12 全綠，而且已經綠了一個禮拜。</div></div>
+  <div class="row real"><div class="lb">實際上</div>
+    <div class="tx">實作在 <b>8/02</b> 改過兩次，測試的假資料停在 <b>8/01</b> 沒跟上。
+      新版第一行就是「沒有 type 欄位就回 False」，而假資料每一行都缺那個欄位——
+      那個函式在 12 條測試裡<b>從未回傳過 True 一次</b>，兩條分支零覆蓋。</div></div>
+  <div class="row how"><div class="lb">怎麼抓到的</div>
+    <div class="tx">兩招。①<b>比 git 時間戳</b>：實作改了而測試檔沒改，那個 commit 就該被懷疑。
+      ②<b>突變測試</b>：故意把那行程式弄壞，測試如果還是綠的，它就沒在測那行。</div></div>
+</div>
+
+<div class="case">
+  <div class="no">案例 三</div>
+  <div class="ct">報表每一欄都有值，結論卻是反的</div>
+  <div class="row looks"><div class="lb">看起來</div>
+    <div class="tx">一份完整的規則觸發率報表，一堆規則顯示 <b>0 觸發</b>，
+      看起來就是「這些規則沒在動」。</div></div>
+  <div class="row real"><div class="lb">實際上</div>
+    <div class="tx">是我的<b>盤點腳本只找了 5 種欄位名，而實際有 21 種</b>。
+      那些「0 觸發」的規則裡，有兩條是<b>每次都觸發、零鑑別力</b>——
+      我的結論<b>方向完全相反</b>。</div></div>
+  <div class="row how"><div class="lb">怎麼抓到的</div>
+    <div class="tx">看到 <b>0</b> 或 <b>100%</b> 先當成自己的腳本壞了，不要當成發現。
+      而且先把欄位名列出來數一次，再開始統計。</div></div>
+</div>
+
+<div class="case">
+  <div class="no">案例 四</div>
+  <div class="ct">「領先 32 個百分點」，其實落後 20 個</div>
+  <div class="row looks"><div class="lb">看起來</div>
+    <div class="tx">兩個方案 A/B 比較，B 大勝——接住率高出 <b>32 個百分點</b>。</div></div>
+  <div class="row real"><div class="lb">實際上</div>
+    <div class="tx">考題是我自己出的，而<b>出題的分類抄自被測的那份設定</b>，
+      等於考前把答案範圍發給出題的人。改用外部的臨床量表重出一份題再測，
+      <b>排名整個顛倒</b>，B 其實落後 20 個百分點。<br>
+      照原結論改下去，會把好的換成差的，<b>而分數還會顯示進步了</b>。</div></div>
+  <div class="row how"><div class="lb">怎麼抓到的</div>
+    <div class="tx">用<b>外部的專業分類體系</b>（這次是臨床的自殺警訊量表與老年憂鬱量表）重出一份題。
+      它是別人為別的目的訂的，必然含有我沒想到的格子。</div></div>
+</div>
+
+<div class="case">
+  <div class="no">案例 五</div>
+  <div class="ct">改完總分只差一格，裡面卻有真的危機被殺掉</div>
+  <div class="row looks"><div class="lb">看起來</div>
+    <div class="tx">補了一批規則，總分幾乎沒動——看起來就是「沒什麼影響」。</div></div>
+  <div class="row real"><div class="lb">實際上</div>
+    <div class="tx"><b>升 8 句、降 9 句</b>，一邊好一邊壞剛好抵銷掉。
+      而降下去的那批裡，有一句是真的危機被判成沒事。</div></div>
+  <div class="row how"><div class="lb">怎麼抓到的</div>
+    <div class="tx">不看總分，<b>存下每一句的判定結果、逐句比對前後</b>。
+      總分相同不代表沒事，可能是兩個方向的變化互相抵銷。</div></div>
+</div>
+
+<div class="sum">
+  <h2>所以我實際在做什麼</h2>
+  <p>不是「相信 AI」也不是「不信 AI」，是<b>先想好這次要怎麼拆穿它</b>，
+    再去看結果。</p>
+  <p>上面五個案例沒有一個是靠「覺得怪怪的」抓到的，
+    全部是<b>事先就準備好的檢查</b>：收得到幾個測試、弄壞會不會紅、
+    欄位名有幾種、考題誰出的、逐句比對。</p>
+  <p>這些判準我寫成了一套會自動跳出來的東西，跟著我每個專案跑：</p>
+  <div class="kit">
+    <div><b>8 支</b><span>攔截程式——我要說「好了」卻沒跑測試、
+      改到不該改的檔、用容易出錯的方式改檔，當下就攔</span></div>
+    <div><b>24 篇</b><span>踩過的坑，一篇一個結論</span></div>
+    <div><b>7 套</b><span>判準：怎麼驗證、評測集怎麼切、怎麼派獨立驗收</span></div>
+    <div><b>1 份</b><span>死路清單——試過不通的做法，避免再試一次</span></div>
+  </div>
+  <div class="foot">
+    這一頁上的每個數字都來自我自己的紀錄，有日期、有當時的檔案。<br>
+    現場想看它跳出來攔我的樣子，我可以開電腦給你看。
+  </div>
+</div>
+
+</div>
+</body></html>
