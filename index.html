@@ -81,6 +81,20 @@
         font-size:12.5px; color:var(--faint); line-height:1.74}
   .fact b{color:var(--dim); font-weight:700}
 
+  /* 實驗表：這張卡的賣點是「打叉的比打勾多」，所以表格本身就是內容 */
+  .exp{margin-top:12px; border:1px solid var(--edge); border-radius:9px; overflow:hidden}
+  .exp .hd2{background:var(--deep); padding:7px 11px; font-size:12px;
+            font-weight:700; color:var(--dim); letter-spacing:.06em;
+            border-bottom:1px solid var(--edge)}
+  .exp ul{list-style:none}
+  .exp li{display:flex; gap:9px; padding:8px 11px; font-size:12.8px; line-height:1.5;
+          border-bottom:1px solid var(--edge)}
+  .exp li:last-child{border-bottom:0}
+  .exp .x{flex:none; color:#D9604F; font-weight:800}
+  .exp .o{flex:none; color:#4C9E6A; font-weight:800}
+  .exp .w{color:var(--dim)}
+  .exp .w b{color:var(--ink); font-weight:700}
+
   .btn{display:flex; align-items:center; justify-content:space-between; gap:10px;
        margin-top:13px; padding:14px 15px; border-radius:10px;
        background:#1D2430; border:1px solid #313A47; color:var(--ink);
@@ -209,6 +223,42 @@
     <a class="btn" href="how.html">
       <span>看五個實際案例</span><span class="k">3 分鐘&nbsp;›</span>
     </a>
+  </div>
+</div>
+
+
+<!-- ⑤ 信用違約 -->
+<div class="card">
+  <div class="hd">
+    <div class="t">信用違約預測</div>
+    <div class="s">Kaggle <em>15 萬筆</em>，正樣本只有 6.7%。<br>四個模型混合，Private AUC <em>0.86946</em>。</div>
+  </div>
+  <div class="body">
+    <div class="fact">
+      <b>做法</b>　自建 25 個特徵 → XGBoost／LightGBM／CatBoost／自寫的 TabResNet
+      → 5-fold 交叉驗證 → 用 OOF 搜出混合權重<br>
+      <b>為什麼看 AUC 不看 F1</b>　F1 要先訂一個門檻，門檻變了分數就變；
+      AUC 不用訂門檻，衡量的是「把會違約的排在前面」的能力
+    </div>
+
+    <div class="exp">
+      <div class="hd2">實驗紀錄 · 打叉的比打勾多</div>
+      <ul>
+        <li><span class="o">✓</span><span class="w"><b>v4 基準</b>　OOF 0.86740 → Private 0.86946</span></li>
+        <li><span class="x">✗</span><span class="w"><b>Pseudo-label</b>　偽正例率 51%，分佈偏移</span></li>
+        <li><span class="x">✗</span><span class="w"><b>多加 7 個特徵</b>　樹模型不需要手工交互</span></li>
+        <li><span class="x">✗</span><span class="w"><b>加寬神經網路</b>　寬度無助益</span></li>
+        <li><span class="x">✗</span><span class="w"><b>加深神經網路</b>　<b>OOF 虛高，Private 退步</b></span></li>
+        <li><span class="x">✗</span><span class="w"><b>Stacking meta-model</b>　不如直接 grid blend</span></li>
+      </ul>
+    </div>
+
+    <div class="fact">
+      <b>這張表才是重點</b>　上面每一個 ✗ 都是標準教科書做法、也是任何人會建議我試的。
+      我試了，然後用數據一個一個否決掉。<br>
+      特別是<b>「加深網路：OOF 虛高、Private 退步」</b>——本地分數變好、換一份沒看過的資料就退步。
+      那跟我在危機偵測上量到的是同一件事。
+    </div>
   </div>
 </div>
 
