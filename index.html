@@ -95,6 +95,23 @@
   .exp .w{color:var(--dim)}
   .exp .w b{color:var(--ink); font-weight:700}
 
+  /* 技術細節：預設收起。掃 QR 的人要白話，技術主管要堆疊 ——
+     兩種需求相反，所以分層而不是二選一。 */
+  details.tech{margin-top:12px; background:var(--deep); border:1px solid var(--edge);
+               border-radius:9px}
+  details.tech summary{cursor:pointer; list-style:none; padding:10px 12px;
+        font-size:13px; font-weight:700; color:var(--cool); letter-spacing:.05em}
+  details.tech summary::-webkit-details-marker{display:none}
+  details.tech summary::after{content:" ▾"; color:var(--faint)}
+  details.tech[open] summary::after{content:" ▴"}
+  details.tech .in{padding:2px 12px 12px; display:flex; flex-direction:column; gap:7px}
+  details.tech dl{display:flex; gap:10px; font-size:12.8px; line-height:1.62}
+  details.tech dt{flex:none; width:62px; color:var(--faint); font-weight:700}
+  details.tech dd{color:var(--dim)}
+  details.tech dd b{color:var(--ink); font-weight:700}
+  details.tech code{font-family:"SF Mono",Consolas,monospace; font-size:12px;
+                    color:var(--amber)}
+
   .btn{display:flex; align-items:center; justify-content:space-between; gap:10px;
        margin-top:13px; padding:14px 15px; border-radius:10px;
        background:#1D2430; border:1px solid #313A47; color:var(--ink);
@@ -161,6 +178,7 @@
       <b>排程</b>　2026 年 6–7 月實作並連續跑了一個月，目前沒有在跑<br>
       <b>範圍</b>　單人、全部在自己電腦上，沒有雲端也沒有多使用者
     </div>
+    <details class="tech"><summary>技術細節</summary><div class="in"><dl><dt>語言</dt><dd>Python</dd></dl><dl><dt>函式庫</dt><dd><code>garminconnect</code>（非官方 API client）、<code>pandas</code>、<code>plotly</code>、<code>google.genai</code>、<code>pypdf</code></dd></dl><dl><dt>資料</dt><dd>本機 JSON 檔案樹，<b>12 個子集</b>：daily／sleep／stress／body_battery／heart_rate／spo2／respiration／activities／steps／body…</dd></dl><dl><dt>流程</dt><dd>排程 → 取昨日資料 → 落地成 JSON → pandas 比七日均與目標 → Gemini 生成建議 → LINE Messaging API 推播</dd></dl><dl><dt>取捨</dt><dd><b>健康資料全部留本機</b>，不上雲。LINE 只收到結論，不含原始數值</dd></dl></div></details>
   </div>
 </div>
 
@@ -186,6 +204,7 @@
       <b>做不到</b>　婉轉、整句沒有危險字的（「我東西都整理好了」）規則層抓不到。完整系統（規則＋LLM）在外部臨床量表出的題目上約四成六<br>
       <b>所以</b>　　它是 LLM 失效時的地板，不是主力
     </div>
+    <details class="tech"><summary>技術細節</summary><div class="in"><dl><dt>實作</dt><dd>Python 正規表達式，<b>5,359 行、218 條 <code>re.compile</code></b></dd></dl><dl><dt>依賴</dt><dd>只 <code>import os, re</code>（都是內建）。<b>無第三方套件、不連網、不用 GPU</b></dd></dl><dl><dt>守門</dt><dd>四層：否定（往前看 8 字，雙重否定優先判）／人稱主詞／媒體引述／時態（往事不報）</dd></dl><dl><dt>架構</dt><dd>地端規則與 LLM <b>各判一次取 max</b>——只升不降，規則層是地板不是主力</dd></dl><dl><dt>評測</dt><dd>golden 280 題、多份 held-out、<b>PTT 真人語料 6,691 句</b>當誤報基準</dd></dl><dl><dt>取捨</dt><dd>不用 ML：要<b>可解釋</b>、要<b>確定性</b>（同一句永遠同一答案）、要 2ms</dd></dl></div></details>
   </div>
 </div>
 
@@ -205,26 +224,10 @@
       <b>四層降級</b>　模型掛掉、額度用完、網路斷了都還能動，只是退回比較笨的模式<br>
       <b>原始碼</b>　　github.com/Mas-000/xiaomi-desk-pet（公開）
     </div>
+    <details class="tech"><summary>技術細節</summary><div class="in"><dl><dt>實作</dt><dd><b>1,985 行原生 JavaScript</b>，跑在瀏覽器裡</dd></dl><dl><dt>沒有的</dt><dd>沒有資料庫、沒有帳號系統、沒有伺服器框架（不用 Flask／Express／Next）</dd></dl><dl><dt>動畫</dt><dd>一張正面立繪切成<b>三十幾張貼圖</b>，用彈簧物理與關鍵影格在 <b>60fps</b> 下驅動</dd></dl><dl><dt>外殼</dt><dd>三種、同一個核心：單檔 HTML（2.2MB 素材內嵌）／Electron 透明置頂視窗／手機模式（276 行標準函式庫伺服器）</dd></dl><dl><dt>LLM</dt><dd>Gemini 只決定「講什麼、什麼情緒」，<b>結構化輸出</b>＋<b>四層降級</b></dd></dl></div></details>
   </div>
 </div>
 
-
-<!-- ④ 怎麼抓 AI 的錯 -->
-<div class="card">
-  <div class="hd">
-    <div class="t">AI 犯的錯，我怎麼抓</div>
-    <div class="s">常有人問我這個。<br>與其解釋，直接看<em>五個實際攔下來的</em>。</div>
-  </div>
-  <div class="body">
-    <div class="fact">
-      它們的共同點：<b>錯的東西長得像對的</b>——不會報錯、不會噴例外，
-      你看到的是綠燈，或一份每欄都有值的報表。
-    </div>
-    <a class="btn" href="how.html">
-      <span>看五個實際案例</span><span class="k">3 分鐘&nbsp;›</span>
-    </a>
-  </div>
-</div>
 
 
 <!-- ⑤ 信用違約 -->
@@ -259,6 +262,39 @@
       特別是<b>「加深網路：OOF 虛高、Private 退步」</b>——本地分數變好、換一份沒看過的資料就退步。
       那跟我在危機偵測上量到的是同一件事。
     </div>
+    <details class="tech"><summary>技術細節</summary><div class="in"><dl><dt>模型</dt><dd>XGBoost／LightGBM／CatBoost／自己寫的 PyTorch <b>TabResNet</b></dd></dl><dl><dt>驗證</dt><dd><code>StratifiedKFold</code> 5-fold，用 OOF 預測搜混合權重</dd></dl><dl><dt>神經網路</dt><dd><code>QuantileTransformer</code> → 4 層殘差塊 → <code>AdamW</code> ＋ <code>OneCycleLR</code>，3 個 seed 平均</dd></dl><dl><dt>特徵</dt><dd>自建 25 個：加權逾期、負債比、收入對數、年齡分桶、缺失指示…</dd></dl><dl><dt>指標</dt><dd>AUC（<b>不用 F1，因為 F1 要先訂門檻</b>，門檻變分數就變）</dd></dl></div></details>
+  </div>
+</div>
+
+
+<!-- ⑥ 思維大腦 -->
+<div class="card">
+  <div class="hd">
+    <div class="t">思維大腦</div>
+    <div class="s">我把自己會犯的錯，做成<em>會在當下攔住我的程式</em>。<br>
+      跟著每一個專案跑，不是一本筆記。</div>
+  </div>
+  <div class="body">
+    <div class="fact">
+      <b>它會做什麼</b>　我要改程式卻沒先講計畫、要說「修好了」卻沒跑測試、
+      改到不該改的檔、數字只有一個來源——<b>當下就出聲</b>，不是事後檢討
+    </div>
+    <details class="tech"><summary>技術細節</summary><div class="in">
+      <dl><dt>規模</dt><dd><b>10 支攔截程式</b>（hook）／<b>28 篇</b>知識／
+        <b>9 套</b>判準（skill）／2 個 agent／1 份死路清單</dd></dl>
+      <dl><dt>掛在哪</dt><dd>Claude Code 的 <code>PreToolUse</code>／
+        <code>PostToolUse</code>／<code>Stop</code> 事件</dd></dl>
+      <dl><dt>自我驗證</dt><dd>其中 <b>8 支 hook 自己有測試</b>——
+        哨兵壞掉會靜靜失效，症狀跟「沒有哨兵」一模一樣</dd></dl>
+      <dl><dt>護欄／查證</dt><dd>一組<b>帶安慰劑對照</b>的實驗，
+        用來量「我寫的規則有沒有真的改變行為」——
+        規則在 context 裡 ≠ 有作用，唯一算數的是拿掉它再跑一次</dd></dl>
+      <dl><dt>安裝</dt><dd>PowerShell 兩行，用 junction 掛進
+        <code>~/.claude/skills</code>，一台電腦裝一次、每個專案都吃得到</dd></dl>
+    </div></details>
+    <a class="btn" href="how.html">
+      <span>看它實際抓到什麼</span><span class="k">五個案例&nbsp;›</span>
+    </a>
   </div>
 </div>
 
